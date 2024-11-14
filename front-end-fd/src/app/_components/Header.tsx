@@ -40,6 +40,7 @@ export default function Header() {
           <ShoppingBasketOutlinedIcon />
           <div className="font-bold text-sm">Нэвтрэх</div>
         </div>
+        <div>HUMUUSEE HUMUUSE AMIDDAAL BIY BIYNEE HAIRLAY</div>
       </div>
     </div>
   );
