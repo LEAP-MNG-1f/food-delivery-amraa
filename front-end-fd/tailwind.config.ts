@@ -14,5 +14,8 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: ["light"], // Add "light" or other light themes like "cupcake" or "bumblebee"
+  },
 } satisfies Config;
