@@ -7,7 +7,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 export default function Header() {
   return (
-    <div className="w-[1258px] h-14 flex items-center justify-between ">
+    <div className="w-[1200px] h-14 flex items-center justify-between ">
       <Stack spacing={2} direction="row">
         <button>
           <Logo />
@@ -27,7 +27,7 @@ export default function Header() {
           <SearchOutlinedIcon />
           <input
             type="text"
-            className="grow h-10 w-[260px]"
+            className="grow h-8 w-[260px]"
             placeholder="Хайх..."
           />
         </label>
@@ -40,7 +40,6 @@ export default function Header() {
           <ShoppingBasketOutlinedIcon />
           <div className="font-bold text-sm">Нэвтрэх</div>
         </div>
-        <div>HUMUUSEE HUMUUSE AMIDDAAL BIY BIYNEE HAIRLAY</div>
       </div>
     </div>
   );
