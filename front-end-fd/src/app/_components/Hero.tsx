@@ -161,7 +161,7 @@ export default function Hero() {
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <div className="card rounded-none w-full bg-base-300 grid h-[95vh] place-items-center">
+      <div className="card rounded-none w-full bg-base-300 grid h-[100vh] place-items-center">
         content
       </div>
       <div className="flex w-[1200px] justify-between py-24">
