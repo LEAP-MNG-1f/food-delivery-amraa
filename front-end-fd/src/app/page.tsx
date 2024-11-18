@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Header from "./_components/Header";
 import Hero from "./_components/Hero";
+import Footer from "./_components/Footer";
 
 export default function Home() {
   const fetchData = async () => {
@@ -23,8 +24,10 @@ export default function Home() {
   }, []);
   return (
     <main className="w-full flex flex-col items-center">
+
       <Header />
-      <Hero /> 
+      <Hero />
+      <Footer />
     </main>
   );
 }
