@@ -1,49 +1,40 @@
 import express from "express";
 import cors from "cors";
-// Use ES Module syntax to import cloudinary
 import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
 
 const server = express();
-const PORT = 8888;
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: "df1bobxmm",
-  secure: true,
-});
-
-const url = cloudinary.url("20241119_100045_mq67u9");
-
-/////////////////////////
-// Uploads an image file
-/////////////////////////
-const uploadImage = async (imagePath) => {
-  // Use the uploaded file's name as the asset's public ID and
-  // allow overwriting the asset with new versions
-  const options = {
-    use_filename: true,
-    unique_filename: false,
-    overwrite: true,
-  };
-
-  try {
-    // Upload the image
-    const result = await cloudinary.uploader.upload(imagePath, options);
-    console.log(result);
-    return result.public_id;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-console.log(url);
 
 server.use(cors());
+server.use(express.json());
+
+dotenv.config();
+
+const PORT = process.env.PORT || 8000;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 
 server.get("/", (req, res) => {
-  res.send(["amraa", "sengee"]);
+  res.send("sainuu delhii");
+});
+
+server.post("/image-upload", async (req, res) => {
+  try {
+    const uploadResult = await cloudinary.uploader.upload(
+      "./assets/friends.jpg"
+    );
+    console.log(uploadResult);
+    res.json(uploadResult);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to upload image" });
+  }
 });
 
 server.listen(PORT, () => {
-  console.log(`http://localhost:${PORT} is running`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
