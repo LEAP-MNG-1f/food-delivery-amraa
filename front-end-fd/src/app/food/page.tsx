@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { HeaderPart } from "../_components/Header";
 
