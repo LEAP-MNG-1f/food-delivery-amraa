@@ -5,9 +5,10 @@ import { useEffect } from "react";
 import * as React from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import Header from "./_components/Header";
+
 import Hero from "./_components/Hero";
-import Footer from "./_components/Footer";
+import { Footer } from "./_components/Footer";
+import { HeaderPart } from "./_components/Header";
 
 export default function Home() {
   const fetchData = async () => {
@@ -23,11 +24,12 @@ export default function Home() {
     fetchData();
   }, []);
   return (
-    <main className="w-full flex flex-col items-center">
-
-      <Header />
-      <Hero />
-      <Footer />
-    </main>
+    <div>
+      <HeaderPart />
+      <main className="w-full flex flex-col items-center">
+        <Hero />
+        <Footer />
+      </main>
+    </div>
   );
 }

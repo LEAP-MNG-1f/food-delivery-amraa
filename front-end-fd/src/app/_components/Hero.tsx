@@ -19,21 +19,21 @@ export default function Hero() {
       id: 1,
       title: "American Recipes",
       amount: 9000,
-      img: "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
+      img: "https://res.cloudinary.com/df1bobxmm/image/upload/unsplash_fdlZBWIP0aM_dgblm9?_a=BAMCkGa40",
       ingredient: "tums luuvan",
     },
     {
       id: 2,
-      title: "Korean Food",
+      title: "Mongolian Haluuhan Food",
       amount: 12000,
-      img: "https://www.thespruceeats.com/thmb/eFzxoZFO-ZWurv42gxrBveHYOf4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/classic-korean-bibimbap-recipe-2118765-step-011-acab906539594dc9a668c7fbb753c43d.jpg",
+      img: "https://res.cloudinary.com/df1bobxmm/image/upload/20241119_100045_mq67u9?_a=BAMCkGa40",
       ingredient: "tums luuvan",
     },
     {
       id: 3,
       title: "Japanese Cuisine",
       amount: 15000,
-      img: "https://turpoisk.ua/images/blog/japonskaja-kuhnia/japon-kuhnia-1.jpg",
+      img: "https://res.cloudinary.com/df1bobxmm/image/upload/20241119_100554_kubkoh?_a=BAMCkGa40",
       ingredient: "tums luuvan",
     },
     {
@@ -160,8 +160,13 @@ export default function Hero() {
   );
 
   return (
-    <div className="w-full flex flex-col items-center justify-center">
-      <div className="card rounded-none w-full bg-base-300 grid h-[100vh] place-items-center">
+    <div className="w-full flex flex-col items-center justify-center pb-20">
+      <div className="card rounded-none relative w-full bg-green-500 grid h-[96vh] place-items-center">
+        <img
+          className="h-full w-full absolute object-cover"
+          src="Zurag.png"
+          alt=""
+        />
         content
       </div>
       <div className="flex w-[1200px] justify-between py-24">
