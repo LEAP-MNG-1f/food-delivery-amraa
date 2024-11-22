@@ -1,67 +1,81 @@
-// import express from "express";
-// import cors from "cors";
-// import { v2 as cloudinary } from "cloudinary";
-// import dotenv from "dotenv";
-
-// const server = express();
-
-// server.use(cors());
-// server.use(express.json());
-
-// dotenv.config();
-
-// const PORT = process.env.PORT || 8000;
-
-// cloudinary.config({
-//   cloud_name: process.env.CLOUD_NAME,
-//   api_key: process.env.API_KEY,
-//   api_secret: process.env.API_SECRET,
-// });
-
-// server.get("/", (req, res) => {
-//   res.send("sainuu delhii");
-// });
-
-// server.post("/image-upload", async (req, res) => {
-//   try {
-//     const uploadResult = await cloudinary.uploader.upload(
-//       "./assets/friends.jpg"
-//     );
-//     console.log(uploadResult);
-//     res.json(uploadResult);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: "Failed to upload image" });
-//   }
-// });
-
-// server.listen(PORT, () => {
-//   console.log(`Server running at http://localhost:${PORT}`);
-// });
-
 import express from "express";
 import cors from "cors";
-import connectDb from "./connectDB.js";
 import dotenv from "dotenv";
+import connectDb from "./connectDB.js";
+import bodyParser from "body-parser";
+import { ObjectId } from "mongodb";
 
 dotenv.config();
 
 const server = express();
-const PORT = 8888;
+const PORT = 4000;
 
 server.use(cors());
+server.use(bodyParser.json());
 
-server.get("/", async (req, res) => {
+server.get("/", async (req, response) => {
   const db = await connectDb();
-  let collection = db.collection("users");
-  let results = await collection.findOne({ name: "Ned Stark" });
 
-  res.json({
+  let collection = db.collection("movies");
+  let results = await collection.find().limit(10).toArray();
+
+  response.json({
     succes: true,
     data: results,
   });
 });
 
+server.post("/product", async (req, response) => {
+  const db = await connectDb();
+
+  const collection = db.collection("product");
+  const result = await collection.insertMany([
+    {
+      name: "puujin",
+      owner: "enkh-amir",
+      price: "10000000099",
+    },
+  ]);
+
+  response.json({
+    succes: true,
+    data: result,
+  });
+});
+
+server.delete("/delete-user", async (req, response) => {
+  const db = await connectDb();
+
+  const collection = db.collection("product");
+  const result = await collection.deleteOne({
+    _id: new ObjectId("674001f7ce5d79b129e49a2e"),
+  });
+
+  response.json({
+    succes: true,
+    data: result,
+  });
+});
+
+server.put("/update-product", async (req, response) => {
+  const db = await connectDb();
+
+  const collection = db.collection("product");
+  const result = await collection.updateOne(
+    {
+      _id: new ObjectId("674001f7ce5d79b129e49a2e"),
+    },
+    {
+      $set: { owner: "enkh-amir", price: "8800", date: new Date() },
+    }
+  );
+
+  response.json({
+    succes: true,
+    data: result,
+  });
+});
+
 server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`server is running on http://localhost:${PORT}`);
 });
