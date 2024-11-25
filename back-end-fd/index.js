@@ -7,6 +7,7 @@ import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 import animeModel from "./model/food.js";
 import userRouter from "./routes/userRouter.js";
+import foodRouter from "./routes/foodRouter.js";
 dotenv.config();
 
 mongoose.connect(
@@ -20,6 +21,7 @@ server.use(cors());
 server.use(bodyParser.json());
 
 server.use("/api", userRouter);
+server.use("/api", foodRouter);
 
 // server.post("/create", async (req, res) => {
 //   const result = await animeModel.create({
