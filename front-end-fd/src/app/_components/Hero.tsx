@@ -7,16 +7,20 @@ import { Card } from "./Card";
 import { Starlogo } from "../../../public/svg/Starlogo";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 
-type foods = {
+type Food = {
   id: number;
-  title: string;
-  amount: number;
-  img: string;
+  name: string;
+  price: number;
+  image: string;
   ingredient?: string;
 };
 
+type ApiResponse = {
+  data: Food[];
+};
+
 export default function Hero() {
-  const [foodsData, setFoodsData] = useState<foods[]>([]);
+  const [foodsData, setFoodsData] = useState<Food[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,19 +29,19 @@ export default function Hero() {
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-        const datas: foods[] = await response.json();
-        setFoodsData(datas.data);
+
+        const datas: ApiResponse = await response.json(); // Match the expected API response
+        setFoodsData(datas.data); // Assign the `data` array to the state
       } catch (err) {
-        console.log(err);
+        console.error("Failed to fetch foods:", err);
       }
     };
 
     fetchProducts();
   }, []);
-
   console.log(foodsData);
 
-  const renderCategory = (categoryName: string, items: foods[]) => (
+  const renderCategory = (categoryName: string, items: Food[]) => (
     <div className="w-full flex flex-col items-center gap-6">
       <div className="w-[1200px] flex justify-between items-center py-4">
         <div className="flex items-center gap-1">
@@ -57,9 +61,9 @@ export default function Hero() {
         {items?.map((dish, index) => (
           <Card
             key={index}
-            title={dish.title}
+            title={dish.name}
             img={dish.image}
-            price={dish.amount}
+            price={dish.price}
             ingredient={dish.ingredient}
           />
         ))}

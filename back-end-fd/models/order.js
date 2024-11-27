@@ -7,18 +7,20 @@ const processEnum = {
 const orderSchema = new Schema({
   customer: {
     type: mongoose.SchemaTypes.ObjectId,
-    ref: "user",
+    ref: "User",
     required: true,
   },
   orderNumber: {
     type: Number,
     required: true,
   },
-  foodIds: {
-    type: Array,
-    ref: "food",
-    required: true,
-  },
+  foodIds: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Food",
+      required: true,
+    },
+  ],
   totalPrice: {
     type: String,
     required: true,
@@ -46,5 +48,5 @@ const orderSchema = new Schema({
   },
 });
 
-const orderModel = model("order", orderSchema);
+const orderModel = model("Order", orderSchema);
 export default orderModel;

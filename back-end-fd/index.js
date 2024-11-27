@@ -1,46 +1,45 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDb from "./connectDB.js";
-import bodyParser from "body-parser";
-import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
-import animeModel from "./models/food.js";
+import bodyParser from "body-parser";
 import userRouter from "./routes/userRouter.js";
 import foodRouter from "./routes/foodRouter.js";
 import orderRouter from "./routes/orderRouter.js";
 import categoryRouter from "./routes/categoryRouter.js";
-dotenv.config();
 
-mongoose.connect(
-  "mongodb+srv://enkhamirr:FUEp0XI9RXiABnAe@leap-test-amar.ijgzw.mongodb.net/food_db"
-);
+dotenv.config();
 
 const server = express();
 const PORT = 4000;
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGODB)
+  .then(() => {
+    console.log("Connected to MongoDB successfully!");
+  })
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB:", err);
+  });
+
+// Middleware
 server.use(cors());
 server.use(bodyParser.json());
 
+// Routes
 server.use("/api", userRouter);
 server.use("/api", foodRouter);
 server.use("/api", orderRouter);
 server.use("/api", categoryRouter);
 
-// server.post("/create", async (req, res) => {
-//   const result = await animeModel.create({
-//     name: "Цуйван",
-//     image:
-//       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Cujwan.JPG/1200px-Cujwan.JPG",
-//     ingredient: "гурил, мах, тос, төмс, лууван, сонгино, чинжүү",
-//     price: 20000,
-//   });
-//   res.json({
-//     success: true,
-//     data: result,
-//   });
-// });
-
+// Start the server
 server.listen(PORT, () => {
-  console.log(`server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

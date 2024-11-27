@@ -1,6 +1,9 @@
-import React from "react";
+
+
+import React, { useEffect, useState } from "react";
 import { Card } from "../_components/Card";
 import { Plus, ChevronRight } from "lucide-react";
+import CreateFoodModal from "./addFoodModal";
 
 // Define the type for menu categories
 interface MenuCategory {
@@ -36,7 +39,37 @@ const MenuCategoryButton: React.FC<MenuCategoryButtonProps> = ({
   </button>
 );
 
+type Food = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  ingredient?: string;
+};
+
+type ApiResponse = {
+  data: Food[];
+};
+
 const MainAdminPage: React.FC = () => {
+  const [foodsData, setFoodsData] = useState<Food[]>([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/foods");
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const datas: ApiResponse = await response.json(); // Match the expected API response
+        setFoodsData(datas.data); // Assign the `data` array to the state
+      } catch (err) {
+        console.error("Failed to fetch foods:", err);
+      }
+    };
+
+    fetchProducts();
+  }, []);
   return (
     <div className="flex min-h-screen bg-white">
       {/* Sidebar */}
@@ -61,17 +94,20 @@ const MainAdminPage: React.FC = () => {
 
       {/* Main Content */}
       <div className="flex-1 w-[69.2vw] p-6 bg-gray-50">
-        <div className="flex justify-between items-center mb-6">
+        <div className="w-[53.1vw] flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Breakfast</h2>
-          <button className="flex btn bg-[#18BA51]">
-            <Plus className="h-4 w-4 mr-2" />
-            Add new food
-          </button>
+          <CreateFoodModal />
         </div>
 
         <div className="w-[53vw] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {[...Array(6)].map((_, index) => (
-            <Card key={index} />
+          {foodsData.map((dish, index) => (
+            <Card
+              key={index}
+              title={dish.name}
+              img={dish.image}
+              price={dish.price}
+              ingredient={dish.ingredient}
+            />
           ))}
         </div>
       </div>
