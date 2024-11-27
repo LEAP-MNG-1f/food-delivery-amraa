@@ -8,6 +8,8 @@ import mongoose from "mongoose";
 import animeModel from "./model/food.js";
 import userRouter from "./routes/userRouter.js";
 import foodRouter from "./routes/foodRouter.js";
+import orderRouter from "./routes/orderRouter.js";
+import categoryRouter from "./routes/categoryRouter.js";
 dotenv.config();
 
 mongoose.connect(
@@ -22,6 +24,8 @@ server.use(bodyParser.json());
 
 server.use("/api", userRouter);
 server.use("/api", foodRouter);
+server.use("/api", orderRouter);
+server.use("/api", categoryRouter);
 
 // server.post("/create", async (req, res) => {
 //   const result = await animeModel.create({

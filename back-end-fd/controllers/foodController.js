@@ -5,8 +5,9 @@ const createFood = async (req, res) => {
     name: "Бууз",
     image:
       "https://mongolamerican.wordpress.com/wp-content/uploads/2012/07/buuz_831.jpg",
-    ingredient: "гурил мах давс сонгино",
+    ingredient: "гурил мах давс сонгино, шидэт шингэн",
     price: 15000,
+    categoryId: "67468f42dc26a5aeb49c7495",
   });
 
   res.json({
