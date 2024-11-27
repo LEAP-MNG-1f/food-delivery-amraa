@@ -5,7 +5,7 @@ import connectDb from "./connectDB.js";
 import bodyParser from "body-parser";
 import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
-import animeModel from "./model/food.js";
+import animeModel from "./models/food.js";
 import userRouter from "./routes/userRouter.js";
 import foodRouter from "./routes/foodRouter.js";
 import orderRouter from "./routes/orderRouter.js";

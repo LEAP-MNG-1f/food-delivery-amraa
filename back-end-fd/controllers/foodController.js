@@ -1,4 +1,4 @@
-import foodModel from "../model/food.js";
+import foodModel from "../models/food.js";
 
 const createFood = async (req, res) => {
   const result = await foodModel.create({
