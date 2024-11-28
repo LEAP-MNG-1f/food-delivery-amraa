@@ -7,6 +7,7 @@ import userRouter from "./routes/userRouter.js";
 import foodRouter from "./routes/foodRouter.js";
 import orderRouter from "./routes/orderRouter.js";
 import categoryRouter from "./routes/categoryRouter.js";
+import cloudinary from "cloudinary";
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ cloudinary.config({
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGODB)
+  .connect(process.env.MONGODB_URL)
   .then(() => {
     console.log("Connected to MongoDB successfully!");
   })

@@ -1,9 +1,18 @@
-import express from "express";
-import { createFood, getAllFood } from "../controllers/foodController.js";
+import exrpess from "express";
+import {
+  createFood,
+  deleteFood,
+  getAllFood,
+  updateFood,
+} from "../controllers/foodController.js";
+import multer from "multer";
 
-const foodRouter = express.Router();
+const upload = multer({ dest: "./uploads/" });
+const foodRouter = exrpess.Router();
 
 foodRouter.get("/foods", getAllFood);
-foodRouter.post("/foods", createFood);
+foodRouter.post("/create-food", upload.single("image"), createFood);
+foodRouter.put("/update-food/:id", updateFood);
+foodRouter.delete("/delete-food/:id", deleteFood);
 
 export default foodRouter;

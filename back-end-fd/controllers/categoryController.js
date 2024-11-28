@@ -1,23 +1,82 @@
-import categoryModel from "../models/category.js";
+import Category from "../models/category.js";
 
-const createCategory = async (req, res) => {
-  const result = await categoryModel.create({
-    name: "Soup",
-  });
-
-  res.json({
-    success: true,
-    data: result,
-  });
+const getAllCategory = async (request, response) => {
+  const result = await Category.find();
+  response.json({ success: true, data: result });
 };
 
-const getAllCategory = async (req, res) => {
-  const result = await categoryModel.find();
+const createCategory = async (request, response) => {
+  try {
+    const { name, foodId } = request.body;
 
-  res.json({
-    success: true,
-    data: result,
-  });
+    const result = await Category.create({ name, foodId: foodId || "" });
+
+    response.status(201).json({ success: true, data: result });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return response.status(400).json({
+        success: false,
+        message: error.message,
+        errors: error.errors,
+      });
+    }
+    console.error(error);
+    response.status(500).json({
+      success: false,
+      message: "Error creating category",
+    });
+  }
 };
 
-export { createCategory, getAllCategory };
+const updateCategory = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { name, foodId } = request.body;
+
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return response
+        .status(400)
+        .json({ success: false, message: "Invalid user Category" });
+    }
+
+    const result = await Category.findByIdAndUpdate(
+      id,
+      { name, foodId },
+      { new: true, runValidators: true }
+    );
+
+    if (!result) {
+      return response.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    response.json({ success: true, data: result });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({
+      success: false,
+      message: "Error updating category",
+    });
+  }
+};
+
+const deleteCategory = async (request, response) => {
+  const { id } = request.params;
+  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    return response
+      .status(400)
+      .json({ success: false, message: "Invalid user Category" });
+  }
+  const result = await Category.findByIdAndDelete(id);
+  if (!result) {
+    return response.status(404).json({
+      success: false,
+      message: "Category not found",
+    });
+  }
+  response.json({ success: true, data: result });
+};
+
+export { getAllCategory, createCategory, updateCategory, deleteCategory };
