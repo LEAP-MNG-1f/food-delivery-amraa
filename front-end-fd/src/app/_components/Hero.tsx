@@ -30,8 +30,8 @@ export default function Hero() {
           throw new Error(`Error: ${response.statusText}`);
         }
 
-        const datas: ApiResponse = await response.json(); // Match the expected API response
-        setFoodsData(datas.data); // Assign the `data` array to the state
+        const datas: ApiResponse = await response.json();
+        setFoodsData(datas.data);
       } catch (err) {
         console.log(err);
       }

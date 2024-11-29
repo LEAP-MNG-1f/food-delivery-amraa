@@ -30,6 +30,7 @@ const CreateCategory = (props: Props) => {
       console.log(categoryName);
 
       props.setIsModalOpenCategory(false);
+      window.location.reload();
     } catch (err) {
       setError("Failed to create category. Please try again.");
     } finally {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
 type FoodData = {
@@ -33,9 +33,9 @@ const CreateFood = (props: Props) => {
     image: null,
   });
 
-  const [categoryData, setCategoryData] = React.useState<Category[]>([]);
-
+  const [categoryData, setCategoryData] = useState<Category[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchDataCategory = async () => {
     try {
@@ -62,6 +62,7 @@ const CreateFood = (props: Props) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("name", foodData.name);
@@ -78,15 +79,43 @@ const CreateFood = (props: Props) => {
         body: formData,
       });
       const data = await response.json();
+
       if (data.success) {
         props.setIsModalOpenFood(false);
+        window.location.reload();
       } else {
-        console.log("error craeting food");
+        console.log("Error creating food");
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // New function to handle clearing the form
+  const handleClear = () => {
+    setFoodData({
+      name: "",
+      ingredient: "",
+      price: "",
+      categoryId: "",
+      image: null,
+    });
+    setImagePreview(null);
+
+    // Reset file input
+    const fileInput = document.getElementById(
+      "uploadFile1"
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = ""; // Clear the file input
+    }
+  };
+
+  useEffect(() => {
+    fetchDataCategory();
+  }, []);
 
   return (
     <div
@@ -94,7 +123,7 @@ const CreateFood = (props: Props) => {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
     >
       <form onSubmit={handleSubmit}>
-        <div className="relative flex flex-col w-[587px] h-[854px] bg-white rounded-2xl justify-between">
+        <div className="relative flex flex-col w-[587px] h-max bg-white rounded-2xl justify-between">
           <div className="flex flex-col">
             <div className="flex justify-between px-6 py-4 items-center border-b">
               <p className="text-[#272727] text-2xl font-bold leading-normal">
@@ -103,6 +132,7 @@ const CreateFood = (props: Props) => {
               <button
                 onClick={() => props.setIsModalOpenFood(false)}
                 className="flex items-center"
+                type="button"
               >
                 <X />
               </button>
@@ -126,15 +156,24 @@ const CreateFood = (props: Props) => {
                 <p className="text-[#121316] text-sm font-normal leading-5">
                   Хоолны ангилал
                 </p>
-                <input
-                  type="text"
-                  value={foodData.categoryId}
+
+                <select
+                  className="h-14 bg-[#F4F4F4] outline-none px-3 rounded-lg"
                   onChange={(e) =>
                     setFoodData({ ...foodData, categoryId: e.target.value })
                   }
-                  className="h-14 bg-[#F4F4F4] outline-none px-3 rounded-lg"
+                  value={foodData.categoryId}
                   required
-                />
+                >
+                  <option value="" disabled>
+                    Select a category
+                  </option>
+                  {categoryData.map((cate: Category) => (
+                    <option key={cate._id} value={cate._id}>
+                      {cate.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex flex-col w-full h-auto gap-2">
                 <p className="text-[#121316] text-sm font-normal leading-5">
@@ -200,12 +239,22 @@ const CreateFood = (props: Props) => {
             </div>
           </div>
           <div className="flex justify-end items-end p-6">
-            <button
-              type="submit"
-              className="bg-[#393939] text-base font-bold leading-5 text-[#ffffff] px-4 py-[10px] rounded-md"
-            >
-              Continue
-            </button>
+            <div className="flex gap-5">
+              <button
+                type="button"
+                onClick={handleClear}
+                className="text-base font-bold leading-5 text-[#393939] px-4 py-[10px] rounded-md hover:bg-gray-100"
+              >
+                Clear
+              </button>
+              <button
+                type="submit"
+                className="bg-[#393939] text-base font-bold leading-5 text-[#ffffff] px-4 py-[10px] rounded-md"
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "Continue"}
+              </button>
+            </div>
           </div>
         </div>
       </form>

@@ -88,7 +88,7 @@ export default function MainAdminPage() {
               Add new food
             </button>
           </div>
-          <div className="w-full h-auto grid grid-cols-3 grid-rows-1 gap-6">
+          <div className="w-full h-auto grid grid-cols-4 grid-rows-1 gap-6">
             {isLoading
               ? Array.from({ length: 9 }).map((_, index) => (
                   <ItemCard key={index} isLoading={true} />

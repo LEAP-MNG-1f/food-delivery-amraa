@@ -21,8 +21,24 @@ const FoodModal: React.FC<FoodModalProps> = ({ isOpen, onClose, food }) => {
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = () => {
+    const cartItem = {
+      ...food,
+      quantity,
+    };
+
+    // Get existing cart from localStorage or initialize an empty array
+    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    // Add the new food item to the cart
+    const updatedCart = [...existingCart, cartItem];
+
+    // Save the updated cart back to localStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
     console.log(`Added ${quantity} ${food.title} to cart.`);
-    onClose();
+    console.log("Updated Cart:", updatedCart);
+
+    onClose(); // Close the modal
   };
 
   return (

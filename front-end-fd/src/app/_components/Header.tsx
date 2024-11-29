@@ -12,6 +12,13 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import BlackPineLogo from "../../../public/svg/BlackPineLogo";
 
+type Food = {
+  _id: string;
+  title: string;
+  price: number;
+  image: string;
+};
+
 const navigationItems = [
   { label: "НҮҮР", path: "/" },
   { label: "ХООЛНЫ ЦЭС", path: "/menu" },
@@ -35,6 +42,9 @@ export const HeaderPart: React.FC = () => {
     []
   );
 
+  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  console.log(cart);
+
   const cartContent = () => (
     <Box role="presentation" className="w-72">
       <div className="p-4 flex justify-between items-center">
@@ -54,6 +64,9 @@ export const HeaderPart: React.FC = () => {
             primary="Таны сагс хоосон байна"
             className="text-gray-500 text-center"
           />
+          {cart.map((item: Food) => (
+            <div key={item.title}>{item.title}</div>
+          ))}
         </ListItem>
       </List>
     </Box>
