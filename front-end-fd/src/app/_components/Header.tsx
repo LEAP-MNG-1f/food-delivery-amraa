@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
@@ -16,7 +17,9 @@ type Food = {
   _id: string;
   title: string;
   price: number;
-  image: string;
+  img: string;
+  description: string;
+  quantity: number;
 };
 
 const navigationItems = [
@@ -26,9 +29,28 @@ const navigationItems = [
 ];
 
 export const HeaderPart: React.FC = () => {
-  const [isCartOpen, setIsCartOpen] = React.useState<boolean>(false);
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [cart, setCart] = useState<Food[]>([]);
 
-  const toggleCart = React.useCallback(
+  // Load cart from localStorage on component mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (error) {
+        console.error("Error parsing cart from localStorage:", error);
+        setCart([]);
+      }
+    }
+  }, []);
+
+  // Update localStorage whenever cart changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  const toggleCart = useCallback(
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
         event.type === "keydown" &&
@@ -42,11 +64,30 @@ export const HeaderPart: React.FC = () => {
     []
   );
 
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  console.log(cart);
+  const removeItemFromCart = (itemToRemove: Food) => {
+    setCart(cart.filter((item) => item._id !== itemToRemove._id));
+  };
+
+  const updateItemQuantity = (itemToUpdate: Food, newQuantity: number) => {
+    if (newQuantity < 1) {
+      removeItemFromCart(itemToUpdate);
+    } else {
+      setCart(
+        cart.map((item) =>
+          item._id === itemToUpdate._id
+            ? { ...item, quantity: newQuantity }
+            : item
+        )
+      );
+    }
+  };
+
+  const calculateTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
 
   const cartContent = () => (
-    <Box role="presentation" className="w-72">
+    <Box role="presentation" className="w-[570px]">
       <div className="p-4 flex justify-between items-center">
         <h2 className="text-xl font-semibold">Таны сагс</h2>
         <IconButton
@@ -59,14 +100,72 @@ export const HeaderPart: React.FC = () => {
       </div>
       <Divider />
       <List>
-        <ListItem>
-          <ListItemText
-            primary="Таны сагс хоосон байна"
-            className="text-gray-500 text-center"
-          />
-          {cart.map((item: Food) => (
-            <div key={item.title}>{item.title}</div>
+        <ListItem className="flex flex-col">
+          {cart.length === 0 && (
+            <ListItemText
+              primary="Таны сагс хоосон байна"
+              className="text-gray-500 text-center"
+            />
+          )}
+          {cart.map((item: Food, index) => (
+            <div className="p-4 flex gap-4 w-full" key={index}>
+              <div>
+                <img
+                  className="w-[245px] h-[150px] object-cover"
+                  src={item.img}
+                  alt={item.title}
+                />
+              </div>
+              <div className="w-[245px] flex flex-col justify-between">
+                <div className="flex justify-between">
+                  <div>
+                    <div className="font-semibold text-lg">{item.title}</div>
+                    <div className="text-[#18BA51] font-semibold text-lg">
+                      {item.price}₮
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeItemFromCart(item)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    X
+                  </button>
+                </div>
+                <div className="text-[#767676] font-normal text-base">
+                  {item.description}
+                </div>
+                <div className="flex items-center">
+                  <button
+                    onClick={() => updateItemQuantity(item, item.quantity - 1)}
+                    className="text-white w-[45px] h-[40px] bg-[#18BA51] rounded-xl font-black text-2xl"
+                  >
+                    -
+                  </button>
+                  <div className="px-7 py-2">{item.quantity}</div>
+                  <button
+                    onClick={() => updateItemQuantity(item, item.quantity + 1)}
+                    className="text-white w-[45px] h-[40px] bg-[#18BA51] rounded-xl font-black text-2xl"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
           ))}
+          {cart.length > 0 && (
+            <div className="fixed bottom-0 right-0 flex w-[570px] justify-between p-8">
+              <div className="flex flex-col gap-1">
+                <div>Нийт төлөх дүн</div>
+                <div className="font-bold text-[#18BA51]">
+                  {calculateTotalPrice()}₮
+                </div>
+              </div>
+
+              <button className="w-56 h-8 py-2 px-4 flex justify-center items-center bg-[#18BA51] text-white text-base font-normal rounded-md">
+                Захиалах
+              </button>
+            </div>
+          )}
         </ListItem>
       </List>
     </Box>
@@ -74,8 +173,7 @@ export const HeaderPart: React.FC = () => {
 
   return (
     <>
-      {/* Spacer div to prevent content from hiding behind fixed header */}
-      <div className="h-20" /> {/* Adjust height to match header height */}
+      <div className="h-20" />
       <header className="fixed top-0 left-0 right-0 border-b border-gray-100 bg-white z-50">
         <div className="container mx-auto py-5">
           <div className="flex items-center justify-between">
@@ -117,7 +215,14 @@ export const HeaderPart: React.FC = () => {
                 aria-expanded={isCartOpen}
                 aria-label="Open cart"
               >
-                <ShoppingCartIcon className="text-black group-hover:text-gray-600 transition-colors duration-300" />
+                <div className="relative">
+                  <ShoppingCartIcon className="text-black group-hover:text-gray-600 transition-colors duration-300" />
+                  {cart.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                      {cart.length}
+                    </span>
+                  )}
+                </div>
                 <span className="font-medium text-black group-hover:text-gray-600 transition-colors duration-300">
                   Сагс
                 </span>
