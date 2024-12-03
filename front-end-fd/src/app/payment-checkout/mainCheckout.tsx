@@ -65,13 +65,16 @@ export default function MainCheckout() {
     };
 
     try {
-      const response = await fetch("http://localhost:4000/api/create-order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/api/create-order`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(orderData),
+        }
+      );
 
       const data = await response.json();
 

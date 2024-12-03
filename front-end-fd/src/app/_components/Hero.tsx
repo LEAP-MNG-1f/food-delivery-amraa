@@ -8,12 +8,17 @@ import { Starlogo } from "../../../public/svg/Starlogo";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import { Category } from "@mui/icons-material";
 
+type smallCate = {
+  _id: string;
+};
+
 type Food = {
   _id: string;
   name: string;
   price: number;
   image: string;
   ingredient?: string;
+  categoryId: smallCate;
 };
 
 type ApiResponse = {
@@ -23,7 +28,7 @@ type ApiResponse = {
 type Category = {
   _id: string;
   name: string;
-  foodId: string;
+  categoryId: string;
 };
 
 type CategoryResponse = {
@@ -38,7 +43,9 @@ export default function Hero() {
 
   const fetchDataCategory = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/categories");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/api/categories`
+      );
       const data: CategoryResponse = await response.json();
       setCategoryData(data.data);
     } catch (error) {
@@ -55,7 +62,9 @@ export default function Hero() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/foods");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/api/foods`
+      );
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
@@ -71,10 +80,6 @@ export default function Hero() {
     fetchDataCategory();
     fetchProducts();
   }, []);
-
-  console.log(categoryData);
-
-  console.log(foodsData);
 
   const renderCategory = (categoryName: string, items: Food[]) => (
     <div className="w-full flex flex-col items-center gap-6">
@@ -163,10 +168,39 @@ export default function Hero() {
             </div>
           ))}
       </div>
-      <div className="flex flex-col gap-20">
-        {categoryData.map((category, index) => (
-          <div key={index}>{renderCategory(category.name, foodsData)}</div>
-        ))}
+
+      <div className="w-full flex flex-col justify-start items-center ">
+        <div className="container flex flex-col gap-20">
+          {categoryData.map((category) => {
+            // Filter foods for the current category
+            const filteredFoods = foodsData.filter(
+              (food) => food.categoryId._id === category._id
+            );
+
+            console.log(filteredFoods);
+
+            return (
+              <div key={category._id}>
+                <h2 className="text-2xl font-semibold mb-4">{category.name}</h2>
+
+                <div className="container flex gap-7">
+                  {filteredFoods.map((dish) => (
+                    <Card
+                      key={dish._id}
+                      _id={dish._id}
+                      name={dish.name}
+                      img={dish.image}
+                      price={dish.price}
+                      ingredient={dish.ingredient}
+                      cart={cart} // Pass the current cart state
+                      setCart={setCart} // Pass the function to update the cart
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

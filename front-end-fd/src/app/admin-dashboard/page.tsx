@@ -53,7 +53,9 @@ export default function page() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/orders");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACK_END_POINT}/api/orders`
+        );
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
@@ -71,7 +73,7 @@ export default function page() {
   const updateOrderProcess = async (orderId: string, newProcess: string) => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/patch-order-process/${orderId}`,
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/api/patch-order-process/${orderId}`,
         {
           method: "PATCH", // Use PATCH for partial updates
           headers: {

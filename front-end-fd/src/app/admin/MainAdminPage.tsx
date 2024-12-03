@@ -41,7 +41,9 @@ export default function MainAdminPage() {
 
   const fetchDataFood = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/foods");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/api/foods`
+      );
       const data: FoodResponse = await response.json();
       setFoodData(data.data);
     } catch (error) {
@@ -53,7 +55,9 @@ export default function MainAdminPage() {
 
   const fetchDataCategory = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/categories");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACK_END_POINT}/api/categories`
+      );
       const data: CategoryResponse = await response.json();
       setCategoryData(data.data);
     } catch (error) {

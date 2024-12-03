@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = `${process.env.NEXT_PUBLIC_BACK_END_POINT}/api`;
 
 const getCategories = async () => {
   const response = await fetch(`${BASE_URL}/categories`);
