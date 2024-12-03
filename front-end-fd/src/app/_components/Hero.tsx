@@ -6,9 +6,10 @@ import BookLogo from "../../../public/svg/Booklogo";
 import { Card } from "./Card";
 import { Starlogo } from "../../../public/svg/Starlogo";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
+import { Category } from "@mui/icons-material";
 
 type Food = {
-  id: number;
+  _id: string;
   name: string;
   price: number;
   image: string;
@@ -19,26 +20,60 @@ type ApiResponse = {
   data: Food[];
 };
 
+type Category = {
+  _id: string;
+  name: string;
+  foodId: string;
+};
+
+type CategoryResponse = {
+  success: boolean;
+  data: Category[];
+};
+
 export default function Hero() {
   const [foodsData, setFoodsData] = useState<Food[]>([]);
+  const [cart, setCart] = useState<any[]>([]); // Cart state
+  const [categoryData, setCategoryData] = React.useState<Category[]>([]);
 
+  const fetchDataCategory = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/categories");
+      const data: CategoryResponse = await response.json();
+      setCategoryData(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // Load initial cart from localStorage
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/foods");
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
 
-        const datas: ApiResponse = await response.json();
-        setFoodsData(datas.data);
-      } catch (err) {
-        console.log(err);
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/foods");
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
       }
-    };
 
+      const datas: ApiResponse = await response.json();
+      setFoodsData(datas.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // Fetch food data
+  useEffect(() => {
+    fetchDataCategory();
     fetchProducts();
   }, []);
+
+  console.log(categoryData);
+
   console.log(foodsData);
 
   const renderCategory = (categoryName: string, items: Food[]) => (
@@ -58,13 +93,16 @@ export default function Hero() {
         </div>
       </div>
       <div className="w-[1200px] flex justify-between">
-        {items?.map((dish, index) => (
+        {items?.map((dish) => (
           <Card
-            key={index}
-            title={dish.name}
+            key={dish._id}
+            _id={dish._id}
+            name={dish.name}
             img={dish.image}
             price={dish.price}
             ingredient={dish.ingredient}
+            cart={cart} // Pass the current cart state
+            setCart={setCart} // Pass the function to update the cart
           />
         ))}
       </div>
@@ -73,8 +111,8 @@ export default function Hero() {
 
   return (
     <div className="w-full flex flex-col items-center justify-center pb-20">
-      <div className="bg-green-500 w-full h-[93vh] flex items-center justify-center relative ">
-        <img className="absolute " src="Zurag.png" alt="Delicious Food 1" />
+      <div className="bg-green-500 w-full h-[93vh] flex items-center justify-center relative">
+        <img className="absolute" src="Zurag.png" alt="Delicious Food 1" />
         <div className="absolute inset-0 bg-pattern opacity-20"></div>
 
         {/* Left Section: Content */}
@@ -126,10 +164,9 @@ export default function Hero() {
           ))}
       </div>
       <div className="flex flex-col gap-20">
-        {renderCategory("Хямдралтай", foodsData)}
-        {/* {renderCategory("Үндсэн хоол", foods.slice(4, 8))}
-        {renderCategory("Салад ба зууш", foods.slice(8, 12))}
-        {renderCategory("Амттан", foods.slice(12, 16))} */}
+        {categoryData.map((category, index) => (
+          <div key={index}>{renderCategory(category.name, foodsData)}</div>
+        ))}
       </div>
     </div>
   );

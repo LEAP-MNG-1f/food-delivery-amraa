@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { HeaderPart } from "../_components/Header";
 import { Footer } from "../_components/Footer";
 import { Card } from "../_components/Card";
@@ -20,6 +20,7 @@ type FoodResponse = {
 
 export default function page() {
   const [foodData, setFoodData] = React.useState<Food[]>([]);
+  const [cart, setCart] = useState<any[]>([]); // Cart state
   const fetchDataFood = async () => {
     try {
       const response = await fetch("http://localhost:4000/api/foods");
@@ -57,10 +58,12 @@ export default function page() {
           {foodData.map((dish) => (
             <Card
               key={dish._id}
-              title={dish.name}
+              name={dish.name}
               img={dish.image}
               price={dish.price}
               ingredient={dish.ingredient}
+              cart={cart}
+              setCart={setCart}
             />
           ))}
         </div>

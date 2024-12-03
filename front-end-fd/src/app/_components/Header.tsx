@@ -31,9 +31,11 @@ const navigationItems = [
 export const HeaderPart: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [cart, setCart] = useState<Food[]>([]);
+  const [isClient, setIsClient] = useState<boolean>(false); // Track client-side rendering
 
   // Load cart from localStorage on component mount
   useEffect(() => {
+    setIsClient(true); // Ensure this only runs on the client-side
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       try {
@@ -45,10 +47,11 @@ export const HeaderPart: React.FC = () => {
     }
   }, []);
 
-  // Update localStorage whenever cart changes
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    if (isClient) {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart, isClient]);
 
   const toggleCart = useCallback(
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -63,6 +66,8 @@ export const HeaderPart: React.FC = () => {
     },
     []
   );
+
+  // Ensure useRouter is only used on the client
 
   const removeItemFromCart = (itemToRemove: Food) => {
     setCart(cart.filter((item) => item._id !== itemToRemove._id));
@@ -160,16 +165,21 @@ export const HeaderPart: React.FC = () => {
                   {calculateTotalPrice()}₮
                 </div>
               </div>
-
-              <button className="w-56 h-8 py-2 px-4 flex justify-center items-center bg-[#18BA51] text-white text-base font-normal rounded-md">
-                Захиалах
-              </button>
+              <Link href="/payment-checkout">
+                <button className="w-56 h-8 py-2 px-4 flex justify-center items-center bg-[#18BA51] text-white text-base font-normal rounded-md">
+                  Захиалах
+                </button>
+              </Link>
             </div>
           )}
         </ListItem>
       </List>
     </Box>
   );
+
+  if (!isClient) {
+    return null; // Prevent rendering on the server side
+  }
 
   return (
     <>

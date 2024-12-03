@@ -10,14 +10,23 @@ interface FoodModalProps {
   isOpen: boolean;
   onClose: () => void;
   food: {
-    title?: string;
+    _id?: string;
+    name?: string;
     description?: string;
     price?: number;
     img?: string;
   };
+  cart: any[]; // Pass the current cart state
+  setCart: React.Dispatch<React.SetStateAction<any[]>>; // Function to update the cart state
 }
 
-const FoodModal: React.FC<FoodModalProps> = ({ isOpen, onClose, food }) => {
+const FoodModal: React.FC<FoodModalProps> = ({
+  isOpen,
+  onClose,
+  food,
+  cart,
+  setCart,
+}) => {
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = () => {
@@ -26,19 +35,24 @@ const FoodModal: React.FC<FoodModalProps> = ({ isOpen, onClose, food }) => {
       quantity,
     };
 
-    // Get existing cart from localStorage or initialize an empty array
-    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingItemIndex = cart.findIndex((item) => item._id === food._id);
 
-    // Add the new food item to the cart
-    const updatedCart = [...existingCart, cartItem];
+    let updatedCart;
 
-    // Save the updated cart back to localStorage
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    if (existingItemIndex !== -1) {
+      updatedCart = cart.map((item, index) =>
+        index === existingItemIndex
+          ? { ...item, quantity: item.quantity + quantity }
+          : item
+      );
+    } else {
+      updatedCart = [...cart, cartItem];
+    }
 
-    console.log(`Added ${quantity} ${food.title} to cart.`);
-    console.log("Updated Cart:", updatedCart);
+    setCart(updatedCart); 
+    localStorage.setItem("cart", JSON.stringify(updatedCart)); 
 
-    onClose(); // Close the modal
+    onClose(); 
   };
 
   return (
@@ -65,7 +79,7 @@ const FoodModal: React.FC<FoodModalProps> = ({ isOpen, onClose, food }) => {
           <div className="md:w-[60%]">
             <img
               src={food.img}
-              alt={food.title || "Food"}
+              alt={food.name || "Food"}
               className="w-[500px] h-[500px] object-cover"
             />
           </div>
@@ -86,7 +100,7 @@ const FoodModal: React.FC<FoodModalProps> = ({ isOpen, onClose, food }) => {
                   <CloseIcon />
                 </IconButton>
               </DialogTitle>
-              <h2 className="text-2xl font-bold mb-2">{food.title}</h2>
+              <h2 className="text-2xl font-bold mb-2">{food.name}</h2>
               <p className="text-green-600 text-xl mb-4">{food.price}₮</p>
               <h3 className="font-bold mb-2">Орц</h3>
               <p className="text-gray-600">{food.description}</p>

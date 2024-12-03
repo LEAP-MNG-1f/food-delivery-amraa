@@ -4,6 +4,10 @@ const processEnum = {
   values: ["active", "waiting", "progress", "delivered"],
 };
 
+const paymentEnum = {
+  values: ["card", "cash"],
+};
+
 const orderSchema = new Schema({
   customer: {
     type: mongoose.SchemaTypes.ObjectId,
@@ -30,7 +34,7 @@ const orderSchema = new Schema({
     enum: processEnum,
     required: true,
   },
-  createDate: {
+  createdDate: {
     type: Date,
     required: true,
   },
@@ -38,11 +42,23 @@ const orderSchema = new Schema({
     type: String,
     required: true,
   },
-  Khoroo: {
+  khoroo: {
     type: String,
     required: true,
   },
-  Apartment: {
+  apartment: {
+    type: String,
+    required: true,
+  },
+  detail: {
+    type: String,
+  },
+  paymentType: {
+    type: String,
+    enum: paymentEnum,
+    required: true,
+  },
+  phoneNumber: {
     type: String,
     required: true,
   },
