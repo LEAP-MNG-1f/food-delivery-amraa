@@ -3,6 +3,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import PineLogo from "../../../public/svg/PineLogo";
+import Link from "next/link";
 
 export const Footer: React.FC = () => {
   return (
@@ -71,7 +72,15 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="w-full flex flex-col justify-center items-center">
-            <h1 className="text-white pt-10">© 2024 Pinecone Foods LLC</h1>
+            <div className="flex z-50">
+              <Link href="/admin">
+                <p  className="text-white pt-10">©</p>
+              </Link>
+              <h1 className="text-white pt-10"> 2024 Pinecone Foods LL</h1>
+              <Link href="/admin-dashboard">
+                <div className="text-white pt-10">C</div>
+              </Link>
+            </div>
             <h1 className="text-white">
               Зохиогчийн эрх хуулиар хамгаалагдсан.
             </h1>

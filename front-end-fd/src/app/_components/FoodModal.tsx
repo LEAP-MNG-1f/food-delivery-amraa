@@ -49,11 +49,12 @@ const FoodModal: React.FC<FoodModalProps> = ({
       updatedCart = [...cart, cartItem];
     }
 
-    setCart(updatedCart); 
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); 
-
-    onClose(); 
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    onClose();
   };
+
+  
 
   return (
     <Dialog

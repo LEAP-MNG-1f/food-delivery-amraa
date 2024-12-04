@@ -44,7 +44,7 @@ export default function MainCheckout() {
       !orderDetails.apartment ||
       !orderDetails.phone
     ) {
-      setError("Please fill in all required fields.");
+      setError("Бүх мэдээллүүдийг оруулна уу");
       return;
     }
 
@@ -286,7 +286,7 @@ export default function MainCheckout() {
             <div>
               <p className="text-gray-600">Нийт төлөх дүн:</p>
               <p className="text-green-600 text-2xl font-bold">
-                {totalPrice.toLocaleString()}
+                ₮{totalPrice.toLocaleString()}
               </p>
             </div>
           </div>

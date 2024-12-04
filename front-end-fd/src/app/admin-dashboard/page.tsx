@@ -104,7 +104,7 @@ export default function page() {
     <div className="flex flex-col items-center">
       <HeaderPart />
       <div className="bg-[#F7F7F8] w-full flex justify-center">
-        <div className="container flex min-h-[93vh] justify-center pt-40">
+        <div className="container flex min-h-[93vh] pb-32 justify-center pt-20">
           <div className="overflow-x-auto">
             <table className="table min-w-[50vw] ">
               {/* head */}
